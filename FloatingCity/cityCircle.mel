@@ -1,0 +1,42 @@
+select -r "*polyBuild*";
+
+select -d "*Shape*";
+
+string $buildings[] = `ls -sl`;
+
+for($r = 0; $r < 3; ++$r){
+    
+    for($j = 0; $j < $r * 2 + 1; ++$j){
+
+    	int $radius = $r * 25; 
+    	int $offset = $j + rand(15, 22);
+
+    	float $unitAngle = (360.0 / ($r*2 + 1));
+        
+        int $x = (int) rand(0,4);
+        
+        select $buildings[$x];
+        
+        instance; 
+
+        float $height = rand(-10,10);
+        float $xPos = $radius * cos(deg_to_rad($unitAngle * $j + $offset));
+        float $zPos = $radius * sin(deg_to_rad($unitAngle * $j + $offset));
+
+        move -r ($xPos) ($height) ($zPos);
+        rotate -r -os -fo 0 ($unitAngle * $j + $offset) 0 ;
+		
+		float $pi = 3.141592;
+        float $initDistAngle = ($pi/2) * ($height/10);
+		float $currDistAngle = $initDistAngle; //initializing the value for calculating building movement
+
+        for($frame = 1; $frame < 180; $frame++){
+			$currDistAngle += 0.1;
+			float $deltaY = 3 * cos($currDistAngle);
+
+        	currentTime ($frame);
+        	move -r (0) ($deltaY) (0);
+        	setKeyframe;
+        }
+    }
+}
